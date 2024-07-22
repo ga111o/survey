@@ -21,7 +21,7 @@ class Question(db.Model):
     text = db.Column(db.String(500), nullable=False)
     markdown_text = db.Column(db.Text, nullable=True)
     survey_id = db.Column(db.Integer, db.ForeignKey('survey.id'), nullable=False)
-    comment = db.Column(db.String(500), nullable=True)
+    comment = db.Column(db.String(500), nullable=True) #주석
     responses = db.relationship('Response', backref='question', lazy=True)
     likert_scales = db.relationship('LikertScale', backref='question', lazy=True)  # 추가된 부분
 
@@ -29,7 +29,7 @@ class Response(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     question_id = db.Column(db.Integer, db.ForeignKey('question.id'), nullable=False)
     answer = db.Column(db.String(500), nullable=False)
-    comment = db.Column(db.String(500), nullable=True)
+    comment = db.Column(db.String(500), nullable=True) #주석
     session_id = db.Column(db.Integer, db.ForeignKey('session.id'), nullable=False)  
 
 class LikertScale(db.Model):
@@ -46,7 +46,7 @@ def create():
     if request.method == 'POST':
         title = request.form['title']
         questions = request.form.getlist('questions')
-        comments = request.form.getlist('comments')
+        comments = request.form.getlist('comments') #주석
         markdowns = request.form.getlist('markdowns')
         likert_scales = request.form.getlist('likert_scales')
 
@@ -131,7 +131,6 @@ def edit_survey(survey_id):
         db.session.commit()
         return redirect(url_for('survey_list'))
     return render_template('edit_survey.html', survey=survey)
-
 
 @app.route('/survey/<int:survey_id>/delete', methods=['POST'])
 def delete_survey(survey_id):

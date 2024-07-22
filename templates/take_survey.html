@@ -12,13 +12,14 @@
     <h2 class="title">{{ survey.title }}</h2>
     <form method="POST">
       {% for question in survey.questions %}
-      <div class="questionBox">
-        <h3>{{ question.text }}</h3>
-
-        {% if question.markdown_text %}
+      <div
+        class="{% if not question.text and not question.markdown_text and not question.likert_scales %}whenNull{% else %}questionBox{% endif %}"
+      >
+        {% if question.text %}
+        <p>{{ question.text }}</p>
+        {% endif %} {% if question.markdown_text %}
         <div>{{ question.markdown_text | markdown | safe }}</div>
         {% endif %} {% if question.likert_scales %}
-
         <div class="radioBox">
           {% for scale in question.likert_scales %}
           <div class="radioButtonBox">
@@ -31,8 +32,9 @@
             />
             <label for="{{ scale.id }}">{{ scale.scale_text }}</label><br />
           </div>
-          {% endfor %} {% endif %}
+          {% endfor %}
         </div>
+        {% endif %}
       </div>
       {% endfor %}
       <div class="bottom">
