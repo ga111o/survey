@@ -4,25 +4,46 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>설문 수정</title>
+    <style>
+      body {
+        padding-left: 100px;
+        padding-top: 50px;
+      }
+    </style>
   </head>
   <body>
-    <h1>설문 수정하기</h1>
     <form method="POST">
-      <label for="title">설문 제목:</label>
-      <input type="text" name="title" value="{{ survey.title }}" /><br /><br />
+      <label for="title">제목: </label>
+      <input
+        type="text"
+        name="title"
+        value="{{ survey.title }}"
+        required
+      /><br /><br />
 
       <h3>질문 수정하기</h3>
       <div id="questions">
         {% for question in survey.questions %}
         <div class="question">
           <label for="questions">질문:</label>
-          <input type="text" name="questions" value="{{ question.text }}" />
+          <input
+            type="text"
+            name="questions"
+            value="{{ question.text }}"
+            required
+          />
           <label for="comments">주석:</label>
           <input type="text" name="comments" value="{{ question.comment }}" />
           <label for="markdowns">마크다운:</label>
           <textarea name="markdowns">{{ question.markdown_text }}</textarea>
-          <label for="likert_scales">scale:</label>
-          <input type="text" name="likert_scales" placeholder="쉼표로 구분" />
+          <label for="likert_scales">스케일:</label>
+          <input
+            type="text"
+            name="likert_scales"
+            value="{{ question.likert_scales | join(', ') }}"
+            placeholder="쉼표로 구분"
+          />
+          <button type="button" onclick="removeQuestion(this)">삭제</button>
         </div>
         {% endfor %}
       </div>
@@ -38,15 +59,21 @@
         newQuestion.className = "question";
         newQuestion.innerHTML = `
                 <label for="questions">질문:</label>
-                <input type="text" name="questions" >
+                <input type="text" name="questions" required>
                 <label for="comments">주석:</label>
                 <input type="text" name="comments">
                 <label for="markdowns">마크다운:</label>
                 <textarea name="markdowns"></textarea>
-                <label for="likert_scales">리커트 스케일 (쉼표로 구분):</label>
-                <input type="text" name="likert_scales" placeholder="예: 매우 불만족, 불만족, 보통, 만족, 매우 만족" />
+                <label for="likert_scales">스케일:</label>
+                <input type="text" name="likert_scales" placeholder="쉼표로 구분">
+                <button type="button" onclick="removeQuestion(this)">삭제</button>
             `;
         questionsDiv.appendChild(newQuestion);
+      }
+
+      function removeQuestion(button) {
+        const questionDiv = button.parentElement;
+        questionDiv.remove();
       }
     </script>
   </body>
