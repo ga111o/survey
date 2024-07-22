@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ survey.title }}</title>
+  </head>
+  <body>
+    <h1>{{ survey.title }}</h1>
+    <form method="POST">
+      {% for question in survey.questions %}
+      <div>
+        <h3>{{ question.text }}</h3>
+        <div>{{ question.markdown_text | markdown }}</div>
+        {% if question.markdown_text %} {% else %}
+        <label for="answer">답변:</label>
+        <input type="text" name="{{ question.id }}" required />
+        {% endif %}
+      </div>
+      {% endfor %}
+      <button type="submit">제출</button>
+    </form>
+    <a href="{{ url_for('session_survey_list', session_id=session_id) }}"
+      >목록으로 돌아가기</a
+    >
+  </body>
+</html>

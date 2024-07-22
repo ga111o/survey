@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>설문 수정</title>
+  </head>
+  <body>
+    <h1>설문 수정하기</h1>
+    <form method="POST">
+      <label for="title">설문 제목:</label>
+      <input
+        type="text"
+        name="title"
+        value="{{ survey.title }}"
+        required
+      /><br /><br />
+
+      <h3>질문 수정하기</h3>
+      <div id="questions">
+        {% for question in survey.questions %}
+        <div class="question">
+          <label for="questions">질문:</label>
+          <input
+            type="text"
+            name="questions"
+            value="{{ question.text }}"
+            required
+          />
+          <label for="comments">주석:</label>
+          <input type="text" name="comments" value="{{ question.comment }}" />
+          <label for="markdowns">마크다운:</label>
+          <textarea name="markdowns">{{ question.markdown_text }}</textarea>
+        </div>
+        {% endfor %}
+      </div>
+      <button type="button" onclick="addQuestion()">질문 추가</button
+      ><br /><br />
+      <button type="submit">설문 수정</button>
+    </form>
+
+    <script>
+      function addQuestion() {
+        const questionsDiv = document.getElementById("questions");
+        const newQuestion = document.createElement("div");
+        newQuestion.className = "question";
+        newQuestion.innerHTML = `
+                <label for="questions">질문:</label>
+                <input type="text" name="questions" required>
+                <label for="comments">주석:</label>
+                <input type="text" name="comments">
+                <label for="markdowns">마크다운:</label>
+                <textarea name="markdowns"></textarea>
+            `;
+        questionsDiv.appendChild(newQuestion);
+      }
+    </script>
+  </body>
+</html>

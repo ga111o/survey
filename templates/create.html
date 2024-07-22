@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>설문 생성</title>
+  </head>
+  <body>
+    <h1>설문 생성하기</h1>
+    <form method="POST">
+      <label for="title">설문 제목:</label>
+      <input type="text" name="title" required /><br /><br />
+
+      <h3>질문 추가하기</h3>
+      <div id="questions">
+        <div class="question">
+          <label for="questions">질문:</label>
+          <input type="text" name="questions" />
+          <label for="comments">주석:</label>
+          <input type="text" name="comments" />
+          <label for="markdowns">마크다운:</label>
+          <textarea name="markdowns"></textarea>
+          <button type="button" onclick="removeQuestion(this)">삭제</button>
+        </div>
+      </div>
+      <button type="button" onclick="addQuestion()">질문 추가</button
+      ><br /><br />
+      <button type="submit">설문 생성</button>
+    </form>
+
+    <script>
+      function addQuestion() {
+        const questionsDiv = document.getElementById("questions");
+        const newQuestion = document.createElement("div");
+        newQuestion.className = "question";
+        newQuestion.innerHTML = `
+                <label for="questions">질문:</label>
+                <input type="text" name="questions">
+                <label for="comments">주석:</label>
+                <input type="text" name="comments">
+                <label for="markdowns">마크다운:</label>
+                <textarea name="markdowns"></textarea>
+                <button type="button" onclick="removeQuestion(this)">삭제</button>
+            `;
+        questionsDiv.appendChild(newQuestion);
+      }
+
+      function removeQuestion(button) {
+        const questionDiv = button.parentElement;
+        questionDiv.remove();
+      }
+    </script>
+  </body>
+</html>
