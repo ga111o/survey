@@ -1,0 +1,71 @@
+/* 기본 스타일 설정 */
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 20px;
+  background-color: #f4f4f4;
+}
+
+.bottom {
+  margin-left: 20%;
+  margin-right: 20%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.title {
+  margin-left: 20%;
+}
+
+.summitButton {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  width: 100px;
+  height: 50px;
+  padding: 10px 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.questionBox {
+  background-color: white;
+  padding: 20px 100px 25px 100px;
+  border-radius: 15px;
+  margin-left: 20%;
+  margin-right: 20%;
+}
+
+.radioBox {
+  flex-direction: row;
+  display: flex;
+  justify-content: space-between;
+}
+
+div {
+  margin: 10px 0;
+}
+
+/* 라디오 버튼 스타일 */
+input[type="radio"] {
+  margin-right: 10px;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+/* 돌아가기 링크 스타일 */
+a {
+  display: inline-block;
+  margin-top: 20px;
+  color: #4caf50;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}

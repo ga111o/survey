@@ -15,11 +15,13 @@
       <div id="questions">
         <div class="question">
           <label for="questions">질문:</label>
-          <input type="text" name="questions" />
+          <input type="text" name="questions" required />
           <label for="comments">주석:</label>
           <input type="text" name="comments" />
           <label for="markdowns">마크다운:</label>
           <textarea name="markdowns"></textarea>
+          <label for="likert_scales">scale</label>
+          <input type="text" name="likert_scales" placeholder="쉼표로 구분" />
           <button type="button" onclick="removeQuestion(this)">삭제</button>
         </div>
       </div>
@@ -41,6 +43,12 @@
                 <label for="markdowns">마크다운:</label>
                 <textarea name="markdowns"></textarea>
                 <button type="button" onclick="removeQuestion(this)">삭제</button>
+                <label for="likert_scales">scale</label>
+                <input
+                  type="text"
+                  name="likert_scales"
+                  placeholder="쉼표로 구분"
+                />
             `;
         questionsDiv.appendChild(newQuestion);
       }

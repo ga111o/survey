@@ -31,6 +31,8 @@
           <input type="text" name="comments" value="{{ question.comment }}" />
           <label for="markdowns">마크다운:</label>
           <textarea name="markdowns">{{ question.markdown_text }}</textarea>
+          <label for="likert_scales">scale:</label>
+          <input type="text" name="likert_scales" placeholder="쉼표로 구분" />
         </div>
         {% endfor %}
       </div>
@@ -51,6 +53,8 @@
                 <input type="text" name="comments">
                 <label for="markdowns">마크다운:</label>
                 <textarea name="markdowns"></textarea>
+                <label for="likert_scales">리커트 스케일 (쉼표로 구분):</label>
+                <input type="text" name="likert_scales" placeholder="예: 매우 불만족, 불만족, 보통, 만족, 매우 만족" />
             `;
         questionsDiv.appendChild(newQuestion);
       }

@@ -19,10 +19,11 @@ class Survey(db.Model):
 class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(500), nullable=False)
-    markdown_text = db.Column(db.Text, nullable=True)  
+    markdown_text = db.Column(db.Text, nullable=True)
     survey_id = db.Column(db.Integer, db.ForeignKey('survey.id'), nullable=False)
-    comment = db.Column(db.String(500), nullable=True)  
+    comment = db.Column(db.String(500), nullable=True)
     responses = db.relationship('Response', backref='question', lazy=True)
+    likert_scales = db.relationship('LikertScale', backref='question', lazy=True)  # 추가된 부분
 
 class Response(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -30,6 +31,12 @@ class Response(db.Model):
     answer = db.Column(db.String(500), nullable=False)
     comment = db.Column(db.String(500), nullable=True)
     session_id = db.Column(db.Integer, db.ForeignKey('session.id'), nullable=False)  
+
+class LikertScale(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    question_id = db.Column(db.Integer, db.ForeignKey('question.id'), nullable=False)
+    scale_text = db.Column(db.String(100), nullable=False)
+
 
 with app.app_context():
     db.create_all()
@@ -41,21 +48,26 @@ def create():
         questions = request.form.getlist('questions')
         comments = request.form.getlist('comments')
         markdowns = request.form.getlist('markdowns')
+        likert_scales = request.form.getlist('likert_scales')
 
         survey = Survey(title=title)
         db.session.add(survey)
         db.session.commit()
 
-        for question_text, comment, markdown in zip(questions, comments, markdowns):
-            if markdown:  
-                question_text = question_text or " "  
-            if question_text:
-                question = Question(text=question_text, survey_id=survey.id, comment=comment, markdown_text=markdown)
-                db.session.add(question)
+        for question_text, comment, markdown, likert_scale in zip(questions, comments, markdowns, likert_scales):
+            question = Question(text=question_text, survey_id=survey.id, comment=comment, markdown_text=markdown)
+            db.session.add(question)
+            db.session.commit()
+
+            if likert_scale:
+                for scale_text in likert_scale.split(','):
+                    likert = LikertScale(question_id=question.id, scale_text=scale_text.strip())
+                    db.session.add(likert)
 
         db.session.commit()
         return redirect(url_for('survey_list'))
     return render_template('create.html')
+
 
 @app.route('/survey/<int:session_id>', methods=['GET'])
 def session_survey_list(session_id):
@@ -72,18 +84,21 @@ def take_survey(session_id, survey_id):
         for question in survey.questions:
             answer = request.form.get(str(question.id))
             if answer:
-                
-                response = Response(
-                    question_id=question.id,
-                    answer=answer,
-                    session_id=session_id,
-                    comment=question.comment  
-                )
-                db.session.add(response)
+                # LikertScale의 scale_text를 가져오는 부분 추가
+                likert_scale = LikertScale.query.filter_by(question_id=question.id, id=answer).first()
+                if likert_scale:
+                    response = Response(
+                        question_id=question.id,
+                        answer=likert_scale.scale_text,  # scale_text 저장
+                        session_id=session_id,
+                        comment=question.comment  
+                    )
+                    db.session.add(response)
 
         db.session.commit()
         return redirect(url_for('session_survey_list', session_id=session_id))
     return render_template('take_survey.html', survey=survey, session_id=session_id)
+
 
 @app.route('/survey/<int:survey_id>/edit', methods=['GET', 'POST'])
 def edit_survey(survey_id):
@@ -93,20 +108,30 @@ def edit_survey(survey_id):
         questions = request.form.getlist('questions')
         comments = request.form.getlist('comments')
         markdowns = request.form.getlist('markdowns')
+        likert_scales = request.form.getlist('likert_scales')
 
-        
-        Question.query.filter_by(survey_id=survey.id).delete()
+        # 기존 질문과 리커트 스케일을 삭제
+        Question.query.filter_by(survey_id=survey.id).delete(synchronize_session='fetch')
+        LikertScale.query.filter(LikertScale.question_id.in_([q.id for q in survey.questions])).delete(synchronize_session='fetch')
 
-        for question_text, comment, markdown in zip(questions, comments, markdowns):
+        # 새 질문과 리커트 스케일 추가
+        for question_text, comment, markdown, likert_scale in zip(questions, comments, markdowns, likert_scales):
             if markdown:  
                 question_text = question_text or " "
             if question_text:
                 question = Question(text=question_text, survey_id=survey.id, comment=comment, markdown_text=markdown)
                 db.session.add(question)
 
+                # 리커트 스케일 추가
+                if likert_scale:
+                    for scale_text in likert_scale.split(','):
+                        likert = LikertScale(question_id=question.id, scale_text=scale_text.strip())
+                        db.session.add(likert)
+
         db.session.commit()
         return redirect(url_for('survey_list'))
     return render_template('edit_survey.html', survey=survey)
+
 
 @app.route('/survey/<int:survey_id>/delete', methods=['POST'])
 def delete_survey(survey_id):
