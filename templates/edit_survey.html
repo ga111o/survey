@@ -9,24 +9,14 @@
     <h1>설문 수정하기</h1>
     <form method="POST">
       <label for="title">설문 제목:</label>
-      <input
-        type="text"
-        name="title"
-        value="{{ survey.title }}"
-        required
-      /><br /><br />
+      <input type="text" name="title" value="{{ survey.title }}" /><br /><br />
 
       <h3>질문 수정하기</h3>
       <div id="questions">
         {% for question in survey.questions %}
         <div class="question">
           <label for="questions">질문:</label>
-          <input
-            type="text"
-            name="questions"
-            value="{{ question.text }}"
-            required
-          />
+          <input type="text" name="questions" value="{{ question.text }}" />
           <label for="comments">주석:</label>
           <input type="text" name="comments" value="{{ question.comment }}" />
           <label for="markdowns">마크다운:</label>
@@ -48,7 +38,7 @@
         newQuestion.className = "question";
         newQuestion.innerHTML = `
                 <label for="questions">질문:</label>
-                <input type="text" name="questions" required>
+                <input type="text" name="questions" >
                 <label for="comments">주석:</label>
                 <input type="text" name="comments">
                 <label for="markdowns">마크다운:</label>

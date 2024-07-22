@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>학번 입력</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='start.css') }}"
+    />
+  </head>
+  <body>
+    <form method="POST" class="form">
+      <label for="session_id">학번을 입력해주세요.</label>
+      <div class="inputSection">
+        <input type="text" id="session_id" name="session_id" required />
+        <button type="submit" class="summitButton">확인</button>
+      </div>
+    </form>
+  </body>
+</html>

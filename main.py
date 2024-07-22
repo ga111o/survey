@@ -140,6 +140,12 @@ def delete_survey(survey_id):
     db.session.commit()
     return redirect(url_for('survey_list'))
 
+@app.route('/start', methods=['GET', 'POST'])
+def start():
+    if request.method == 'POST':
+        session_id = request.form['session_id']
+        return redirect(url_for('session_survey_list', session_id=session_id))
+    return render_template('start.html')
 
 @app.template_filter('markdown')
 def markdown_filter(text):

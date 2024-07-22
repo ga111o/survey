@@ -16,12 +16,14 @@
         <h3>{{ question.text }}</h3>
 
         {% if question.markdown_text %}
-        <div>{{ question.markdown_text | markdown }}</div>
+        <div>{{ question.markdown_text | markdown | safe }}</div>
         {% endif %} {% if question.likert_scales %}
+
         <div class="radioBox">
           {% for scale in question.likert_scales %}
-          <div>
+          <div class="radioButtonBox">
             <input
+              class="radioButton"
               type="radio"
               name="{{ question.id }}"
               value="{{ scale.id }}"

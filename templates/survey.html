@@ -3,22 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>설문 목록</title>
+    <title>title</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='survey.css') }}"
+    />
   </head>
   <body>
-    <h1>설문 목록</h1>
-    <ul>
-      {% for survey in surveys %}
-      <li>
-        {{ survey.title }} {% if survey.id in participated_survey_ids %}
-        <span style="color: green">(참여 완료)</span>
-        {% endif %}
-        <a
-          href="{{ url_for('take_survey', session_id=session_id, survey_id=survey.id) }}"
-          >참여하기</a
-        >
-      </li>
-      {% endfor %}
-    </ul>
+    <div class="head">
+      <h1>title</h1>
+      <p>위 항목부터 순서대로 진행해주세요.</p>
+    </div>
+    {% for survey in surveys %}
+    <div class="lists">
+      <a
+        class="link"
+        href="{{ url_for('take_survey', session_id=session_id, survey_id=survey.id) }}"
+        >{{ survey.title }}
+      </a>
+      {% if survey.id in participated_survey_ids %}<span style="color: green"
+        >(참여 완료)</span
+      >
+      {% endif %}
+    </div>
+    {% endfor %}
   </body>
 </html>

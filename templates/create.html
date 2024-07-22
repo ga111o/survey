@@ -4,11 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>설문 생성</title>
+    <style>
+      body {
+        padding-left: 100px;
+        padding-top: 50px;
+      }
+    </style>
   </head>
   <body>
-    <h1>설문 생성하기</h1>
     <form method="POST">
-      <label for="title">설문 제목:</label>
+      <label for="title">title: </label>
       <input type="text" name="title" required /><br /><br />
 
       <h3>질문 추가하기</h3>
@@ -42,13 +47,14 @@
                 <input type="text" name="comments">
                 <label for="markdowns">마크다운:</label>
                 <textarea name="markdowns"></textarea>
-                <button type="button" onclick="removeQuestion(this)">삭제</button>
                 <label for="likert_scales">scale</label>
                 <input
                   type="text"
                   name="likert_scales"
                   placeholder="쉼표로 구분"
                 />
+                <button type="button" onclick="removeQuestion(this)">삭제</button>
+
             `;
         questionsDiv.appendChild(newQuestion);
       }
