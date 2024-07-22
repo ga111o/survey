@@ -9,6 +9,9 @@
         padding-left: 100px;
         padding-top: 50px;
       }
+      .create {
+        float: right;
+      }
     </style>
   </head>
   <body>
@@ -17,6 +20,8 @@
       <input type="text" name="title" required /><br /><br />
 
       <h3>질문 추가하기</h3>
+
+      <button type="button" onclick="addQuestion()">질문 추가</button>
       <div id="questions">
         <div class="question">
           <label for="questions">질문:</label>
@@ -30,10 +35,10 @@
           <button type="button" onclick="removeQuestion(this)">삭제</button>
         </div>
       </div>
-      <button type="button" onclick="addQuestion()">질문 추가</button
-      ><br /><br />
-      <button type="submit">설문 생성</button>
+      <br /><br />
+      <button class="create" type="submit">설문 생성</button>
     </form>
+    <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
 
     <script>
       function addQuestion() {

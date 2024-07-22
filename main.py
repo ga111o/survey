@@ -84,12 +84,11 @@ def take_survey(session_id, survey_id):
         for question in survey.questions:
             answer = request.form.get(str(question.id))
             if answer:
-                # LikertScale의 scale_text를 가져오는 부분 추가
                 likert_scale = LikertScale.query.filter_by(question_id=question.id, id=answer).first()
                 if likert_scale:
                     response = Response(
                         question_id=question.id,
-                        answer=likert_scale.scale_text,  # scale_text 저장
+                        answer=likert_scale.scale_text, 
                         session_id=session_id,
                         comment=question.comment  
                     )
@@ -99,61 +98,35 @@ def take_survey(session_id, survey_id):
         return redirect(url_for('session_survey_list', session_id=session_id))
     return render_template('take_survey.html', survey=survey, session_id=session_id)
 
-
 @app.route('/survey/<int:survey_id>/edit', methods=['GET', 'POST'])
 def edit_survey(survey_id):
     survey = Survey.query.get_or_404(survey_id)
-
     if request.method == 'POST':
-        # 설문 제목 업데이트
-        survey.title = request.form['title']
-
-        # 질문 및 리커트 스케일 업데이트
-        questions = request.form.getlist('questions')
-        comments = request.form.getlist('comments')
-        markdowns = request.form.getlist('markdowns')
-        likert_scales = request.form.getlist('likert_scales')
-
-        # 기존 질문 삭제
-        Question.query.filter_by(survey_id=survey.id).delete(synchronize_session='fetch')
-        LikertScale.query.filter(LikertScale.question_id.in_([q.id for q in survey.questions])).delete(synchronize_session='fetch')
-
-        # 새 질문 및 리커트 스케일 추가
-        for question_text, comment, markdown, likert_scale in zip(questions, comments, markdowns, likert_scales):
-            if not question_text.strip():  # 질문이 비어있지 않은 경우만 처리
-                continue
-
-            question = Question(
-                text=question_text,
-                survey_id=survey.id,
-                comment=comment,
-                markdown_text=markdown
-            )
-            db.session.add(question)
-
-            # 리커트 스케일 추가
-            if likert_scale:
-                for scale_text in likert_scale.split(','):
-                    likert = LikertScale(question_id=question.id, scale_text=scale_text.strip())
-                    db.session.add(likert)
-
+        title = request.form['title']
+        survey.title = title
         db.session.commit()
         return redirect(url_for('survey_list'))
-
-    # GET 요청 시 기존 설문 정보와 질문을 가져옴
-    return render_template('edit_survey.html', survey=survey)
+    return render_template('edit.html', survey=survey)
 
 
 @app.route('/survey/<int:survey_id>/delete', methods=['GET'])
 def delete_survey(survey_id):
     survey = Survey.query.get_or_404(survey_id)
+
+    questions = Question.query.filter_by(survey_id=survey.id).all()
+    for question in questions:
+  
+        LikertScale.query.filter_by(question_id=question.id).delete(synchronize_session='fetch')
+    
     Question.query.filter_by(survey_id=survey.id).delete(synchronize_session='fetch')
+    
     Response.query.filter(Response.question.has(survey_id=survey.id)).delete(synchronize_session='fetch')
     
     db.session.delete(survey)
     db.session.commit()
 
     return redirect(url_for('survey_list'))
+
 
 
 @app.route('/start', methods=['GET', 'POST'])
